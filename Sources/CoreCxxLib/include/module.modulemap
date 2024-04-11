@@ -1,0 +1,4 @@
+module CoreCxxLib {
+    header "corecxxlib.h"
+    export *
+}

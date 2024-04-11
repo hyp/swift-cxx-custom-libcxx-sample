@@ -1,0 +1,14 @@
+{
+  'version': 0,
+  'use-external-names': false,
+  'roots': [
+    {
+      'name': '@CUSTOM_CXX_STDLIB_INCLUDE_PATH@', 'type': 'directory',
+      'contents': [
+        { 'name': 'module.modulemap', 'type': 'file',
+          'external-contents': '@CMAKE_BINARY_DIR@/overlay/overlay-libc++-module.modulemap'
+        },
+      ]
+    },
+  ]
+}
