@@ -16,7 +16,7 @@ work just as well on other platforms too.
 > cmake -G Ninja -B build -S .
 > ninja -C build
 > build\bin\SampleUsesCustomStdlibModule.exe
-``
+```
 
 expected output:
 
