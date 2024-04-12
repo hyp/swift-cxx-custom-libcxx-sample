@@ -28,4 +28,32 @@ will go to: swift.org
 test C++ system lib
 ```
 
-(More to come...)
+## Project structure
+
+This project is broken down into the following subtargets:
+
+1) 'CoreCxxLib' : This is the C++ library that depends on
+   using the custom libc++. It's header only for the purpose
+   of simplifying this sample.
+
+2) 'CoreAbstractInterface': This is the Swift library that
+   defines Swift structures and AnyObject protocols that
+   are then implemented and used to interact between
+   'CoreCustomStdlibUser' and 'SampleUsesCustomStdlibModule'.
+   It doesn't use C++
+   interoperability, so that it can be used by other 
+   Swift libraries, that either use custom libc++, or system's C++ stdlib.
+
+3) 'CoreCustomStdlibUser': This is the Swift library that
+   uses custom libc++ and imports CoreCxxLib, to provide
+   a Swift wrapper that operates on CoreCxxLib. It
+   implements the protocols declared in 'CoreAbstractInterface',
+   which are then used by 'SampleUsesCustomStdlibModule'
+   through the abstraction provided by the protocol.
+
+4) 'SampleUsesCustomStdlibModule': This is the Swift 
+   executable that acts as the rest of the program,
+   and uses system's C++ stdlib. It interacts with
+   'CoreCustomStdlibUser' using some Swift-only
+   APIs from 'CoreCustomStdlibUser', and also using
+   protocols and structures declared in 'CoreAbstractInterface'.
