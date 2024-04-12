@@ -43,6 +43,7 @@ configure_file(overlays/overlay-custom-libc++.yaml.in
 add_library(CoreCustomStdlibUser SHARED
     Sources/CoreCustomStdlibUser/CoreCustomStdlibProgram.swift
     Sources/CoreCustomStdlibUser/CoreCustomStdlibTab.swift
+    Sources/CoreCustomStdlibUser/LibcxxUtils/LibcxxString.swift
     )
 target_include_directories(CoreCustomStdlibUser PRIVATE
     ${CMAKE_BINARY_DIR}/swift)
