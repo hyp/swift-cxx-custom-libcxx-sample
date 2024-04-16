@@ -1,6 +1,6 @@
-// Import 'CoreCxxLib', which depends on custom libc++
+// Import 'CoreLibCxx', which depends on custom libc++
 // using implementation only import!
-@_implementationOnly import CoreCxxLib
+@_implementationOnly import CoreLibCxx
 
 class TabImplWithCustomCxxStdlib: Tab {
     let program: ProgramImplWithCustomCxxStdlib

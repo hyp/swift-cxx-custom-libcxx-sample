@@ -1,4 +1,4 @@
-import CoreCustomStdlibUser
+import CoreLib
 import CxxStdlib
 
 @main

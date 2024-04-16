@@ -15,7 +15,7 @@ add_library(CommonCore SHARED
     )
 
 
-# Path to the custom C++ stdlib used by 'CoreCustomStdlibUser'.
+# Path to the custom C++ stdlib used by 'CoreLib'.
 set(CUSTOM_CXX_STDLIB_PATH 
     ${CMAKE_SOURCE_DIR}/deps/libcxx-x64-windows)
 set(CUSTOM_CXX_STDLIB_INCLUDE_PATH
@@ -36,50 +36,50 @@ configure_file(overlays/overlay-custom-libc++.yaml.in
                ${CMAKE_BINARY_DIR}/overlay/overlay-custom-libc++.yaml)
 
 
-# 'CoreCustomStdlibUser': This is a Swift library
-# that uses 'CoreCxxLib', which in turn forces it to use
+# 'CoreLib': This is a Swift library
+# that uses 'CoreLibCxx', which in turn forces it to use
 # a custom libc++ instead of system's C++ stdlib.
-add_library(CoreCustomStdlibUser SHARED
-    Sources/CoreCustomStdlibUser/Program.swift
-    Sources/CoreCustomStdlibUser/Tab.swift
-    Sources/CoreCustomStdlibUser/CoreCustomStdlibProgram.swift
-    Sources/CoreCustomStdlibUser/CoreCustomStdlibTab.swift
-    Sources/CoreCustomStdlibUser/LibcxxUtils/LibcxxString.swift
+add_library(CoreLib SHARED
+    Sources/CoreLib/Program.swift
+    Sources/CoreLib/Tab.swift
+    Sources/CoreLib/CoreCustomStdlibProgram.swift
+    Sources/CoreLib/CoreCustomStdlibTab.swift
+    Sources/CoreLib/LibcxxUtils/LibcxxString.swift
     )
-target_include_directories(CoreCustomStdlibUser PRIVATE
+target_include_directories(CoreLib PRIVATE
     ${CMAKE_BINARY_DIR}/swift)
-target_include_directories(CoreCustomStdlibUser PRIVATE
-    ${CMAKE_SOURCE_DIR}/Sources/CoreCxxLib/include)
-target_compile_options(CoreCustomStdlibUser PRIVATE
+target_include_directories(CoreLib PRIVATE
+    ${CMAKE_SOURCE_DIR}/Sources/CoreLibCxx/include)
+target_compile_options(CoreLib PRIVATE
     -cxx-interoperability-mode=default)
-# Find the custom C++ stdlib 'CoreCxxLib' depends on.
-target_compile_options(CoreCustomStdlibUser PRIVATE
+# Find the custom C++ stdlib 'CoreLibCxx' depends on.
+target_compile_options(CoreLib PRIVATE
     "SHELL:$<$<COMPILE_LANGUAGE:Swift>:-Xfrontend -clang-libcxx-path${CUSTOM_CXX_STDLIB_INCLUDE_PATH}>")
 # Overlay an adjusted module map for libc++, with renamed 'std' module.
-target_compile_options(CoreCustomStdlibUser PRIVATE
+target_compile_options(CoreLib PRIVATE
     "SHELL:$<$<COMPILE_LANGUAGE:Swift>:-Xcc -ivfsoverlay -Xcc ${CMAKE_BINARY_DIR}/overlay/overlay-custom-libc++.yaml>")
-target_link_libraries(CoreCustomStdlibUser PUBLIC
+target_link_libraries(CoreLib PUBLIC
     CommonCore)
-# Make sure 'CoreCustomStdlibUser' can find libc++ to link with.
-target_link_directories(CoreCustomStdlibUser PRIVATE
+# Make sure 'CoreLib' can find libc++ to link with.
+target_link_directories(CoreLib PRIVATE
     ${CUSTOM_CXX_STDLIB_LIB_PATH})
 
 
-# 'SampleUsesCustomStdlibModule': this is the Swift executable
+# 'SampleMainSwiftProgram': this is the Swift executable
 # that acts as the rest of the program, that uses C++ interoperability
 # with system's C++ stdlib, e.g. MSVC STL on Windows.
-add_executable(SampleUsesCustomStdlibModule
-    Sources/SampleUsesCustomStdlibModule/Main.swift)
-target_include_directories(SampleUsesCustomStdlibModule PRIVATE
+add_executable(SampleMainSwiftProgram
+    Sources/SampleMainSwiftProgram/Main.swift)
+target_include_directories(SampleMainSwiftProgram PRIVATE
     ${CMAKE_BINARY_DIR}/swift)
-target_compile_options(SampleUsesCustomStdlibModule PRIVATE
+target_compile_options(SampleMainSwiftProgram PRIVATE
     -parse-as-library
     -cxx-interoperability-mode=default)
-target_link_libraries(SampleUsesCustomStdlibModule PUBLIC
-    CoreCustomStdlibUser)
+target_link_libraries(SampleMainSwiftProgram PUBLIC
+    CoreLib)
 
 # Copy over libc++ dll over to the bin directory.
-add_custom_command(TARGET SampleUsesCustomStdlibModule POST_BUILD
+add_custom_command(TARGET SampleMainSwiftProgram POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CUSTOM_CXX_STDLIB_PATH}/bin/c++.dll" 
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}) 

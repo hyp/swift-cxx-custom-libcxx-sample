@@ -15,7 +15,7 @@ work just as well on other platforms too.
 ```
 > cmake -G Ninja -B build -S .
 > ninja -C build
-> build\bin\SampleUsesCustomStdlibModule.exe
+> build\bin\SampleMainSwiftProgram.exe
 ```
 
 expected output:
@@ -39,26 +39,26 @@ This project is broken down into the following subtargets:
    interoperability, and thus it can be used by other 
    Swift libraries, that either use custom libc++, or system's C++ stdlib.
 
-2) 'CoreCxxLib' : This is the C++ library that depends on
+2) 'CoreLibCxx' : This is the C++ library that depends on
    using the custom libc++. It's header only for the purpose
    of simplifying this sample.
 
-3) 'CoreCustomStdlibUser': This is the Swift library that
-   uses custom libc++ and imports CoreCxxLib, to provide
-   a Swift wrapper that operates on CoreCxxLib.
+3) 'CoreLib': This is the Swift library that
+   uses custom libc++ and imports 'CoreLibCxx', to provide
+   a Swift wrapper that operates on 'CoreLibCxx'.
    It uses two public class protocols 'Tab' and
    'Program' to provide a resilient abstraction
    over the implementation of the 'Program' and 'Tab'
    functionality in this library. Such abstraction 
-   ensures that C++ dependency details from 'CoreCxxLib' do
-   not leak to other Swift dependencies, like 'SampleUsesCustomStdlibModule'.
+   ensures that C++ dependency details from 'CoreLibCxx' do
+   not leak to other Swift dependencies, like 'SampleMainSwiftProgram'.
    These two protocols are implemented using two
    private classes that operate on the APIs provided
-   by the 'CoreCxxLib' C++ library.
+   by the 'CoreLibCxx' C++ library.
 
-4) 'SampleUsesCustomStdlibModule': This is the Swift 
+4) 'SampleMainSwiftProgram': This is the Swift 
    executable that acts as the rest of the program,
    and uses system's C++ stdlib. It interacts with
-   'CoreCustomStdlibUser' using some Swift-only
-   APIs from 'CoreCustomStdlibUser', and also using
-   protocols and structures declared in 'CoreAbstractInterface'.
+   'CoreLib' using some Swift-only function
+   and protocol-based
+   APIs from 'CoreLib'.

@@ -2,7 +2,7 @@
 // between libc++'s std::string and Swift's string.
 
 // Import libc++ module, using implementation only import!
-@_implementationOnly import CoreCxxLib
+@_implementationOnly import CoreLibCxx
 
 extension std.string {
   /// Creates a C++ string having the same content as the given Swift string.

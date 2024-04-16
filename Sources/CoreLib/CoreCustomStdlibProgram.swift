@@ -1,8 +1,8 @@
 public import CommonCore
 
-// Import 'CoreCxxLib', which depends on custom libc++
+// Import 'CoreLibCxx', which depends on custom libc++
 // using implementation only import!
-@_implementationOnly import CoreCxxLib
+@_implementationOnly import CoreLibCxx
 
 // FIXME: Drop the need for manual CxxSequence
 // conformance.

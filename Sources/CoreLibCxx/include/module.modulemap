@@ -1,4 +1,4 @@
-module CoreCxxLib {
+module CoreLibCxx {
     header "corecxxlib.h"
     export *
 }
