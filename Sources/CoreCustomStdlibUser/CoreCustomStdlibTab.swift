@@ -1,5 +1,3 @@
-public import CoreAbstractInterface
-
 // Import 'CoreCxxLib', which depends on custom libc++
 // using implementation only import!
 @_implementationOnly import CoreCxxLib

@@ -7,12 +7,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_Swift_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/swift)
 
-# 'CoreAbstractInterface': base Swift library
+# 'CommonCore': base Swift library
 # that declares common structures and protocols
 # that don't depend on any C++ features.
-add_library(CoreAbstractInterface SHARED
-    Sources/CoreAbstractInterface/Program.swift
-    Sources/CoreAbstractInterface/Tab.swift
+add_library(CommonCore SHARED
+    Sources/CommonCore/Version.swift
     )
 
 
@@ -41,6 +40,8 @@ configure_file(overlays/overlay-custom-libc++.yaml.in
 # that uses 'CoreCxxLib', which in turn forces it to use
 # a custom libc++ instead of system's C++ stdlib.
 add_library(CoreCustomStdlibUser SHARED
+    Sources/CoreCustomStdlibUser/Program.swift
+    Sources/CoreCustomStdlibUser/Tab.swift
     Sources/CoreCustomStdlibUser/CoreCustomStdlibProgram.swift
     Sources/CoreCustomStdlibUser/CoreCustomStdlibTab.swift
     Sources/CoreCustomStdlibUser/LibcxxUtils/LibcxxString.swift
@@ -58,7 +59,7 @@ target_compile_options(CoreCustomStdlibUser PRIVATE
 target_compile_options(CoreCustomStdlibUser PRIVATE
     "SHELL:$<$<COMPILE_LANGUAGE:Swift>:-Xcc -ivfsoverlay -Xcc ${CMAKE_BINARY_DIR}/overlay/overlay-custom-libc++.yaml>")
 target_link_libraries(CoreCustomStdlibUser PUBLIC
-    CoreAbstractInterface)
+    CommonCore)
 # Make sure 'CoreCustomStdlibUser' can find libc++ to link with.
 target_link_directories(CoreCustomStdlibUser PRIVATE
     ${CUSTOM_CXX_STDLIB_LIB_PATH})

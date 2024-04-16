@@ -32,24 +32,29 @@ test C++ system lib
 
 This project is broken down into the following subtargets:
 
-1) 'CoreCxxLib' : This is the C++ library that depends on
+
+1) 'CommonCore': A core Swift library with some common
+   data types used by all targets, like the `Version`
+   struct. This library doesn't use C++
+   interoperability, and thus it can be used by other 
+   Swift libraries, that either use custom libc++, or system's C++ stdlib.
+
+2) 'CoreCxxLib' : This is the C++ library that depends on
    using the custom libc++. It's header only for the purpose
    of simplifying this sample.
 
-2) 'CoreAbstractInterface': This is the Swift library that
-   defines Swift structures and AnyObject protocols that
-   are then implemented and used to interact between
-   'CoreCustomStdlibUser' and 'SampleUsesCustomStdlibModule'.
-   It doesn't use C++
-   interoperability, so that it can be used by other 
-   Swift libraries, that either use custom libc++, or system's C++ stdlib.
-
 3) 'CoreCustomStdlibUser': This is the Swift library that
    uses custom libc++ and imports CoreCxxLib, to provide
-   a Swift wrapper that operates on CoreCxxLib. It
-   implements the protocols declared in 'CoreAbstractInterface',
-   which are then used by 'SampleUsesCustomStdlibModule'
-   through the abstraction provided by the protocol.
+   a Swift wrapper that operates on CoreCxxLib.
+   It uses two public class protocols 'Tab' and
+   'Program' to provide a resilient abstraction
+   over the implementation of the 'Program' and 'Tab'
+   functionality in this library. Such abstraction 
+   ensures that C++ dependency details from 'CoreCxxLib' do
+   not leak to other Swift dependencies, like 'SampleUsesCustomStdlibModule'.
+   These two protocols are implemented using two
+   private classes that operate on the APIs provided
+   by the 'CoreCxxLib' C++ library.
 
 4) 'SampleUsesCustomStdlibModule': This is the Swift 
    executable that acts as the rest of the program,

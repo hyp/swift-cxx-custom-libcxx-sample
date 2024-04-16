@@ -1,4 +1,4 @@
-public import CoreAbstractInterface
+public import CommonCore
 
 // Import 'CoreCxxLib', which depends on custom libc++
 // using implementation only import!
